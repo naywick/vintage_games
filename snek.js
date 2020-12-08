@@ -32,6 +32,7 @@ const getPressedKey = pressedKeySource();
 let snekPos = [ 4, 4 ];
 let snekVel = [ 1, 0 ];
 
+// main loop (it goes forever)
 while (true) {
   // do stuff
   clearScreen();
