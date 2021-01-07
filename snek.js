@@ -42,18 +42,54 @@ while (true) {
 
   let key = getPressedKey();
 
-  console.log("You pressed " + key);
-
   if (key == 'q') {
     process.exit();
   }
-  sleep(1000);
+
+  // up
+  if (key == 'i') {
+    if (equals(snekVel,[ 0, 1 ])) {
+      // do nothing
+    } else {
+      snekVel = [ 0, -1 ];
+    }
+  }
+
+  //left
+  if (key == 'j') {
+    if (equals(snekVel,[ 1, 0 ])) {
+      // do nothing
+    } else {
+      snekVel = [ -1, 0 ];
+    }
+  }
+
+  //right
+  if (key == 'k') {
+    if (equals(snekVel,[ -1, 0 ])) {
+      // do nothing
+    } else {
+      snekVel = [ 1, 0 ];
+    }
+  }
+
+  //down
+  if (key == 'm') {
+    if (equals(snekVel,[ 0, -1 ])) {
+      // do nothing
+    } else {
+      snekVel = [ 0, 1 ];
+    }
+  }
+  sleep(2000);
 
   // update snek position (x axis)
   snekPos[0] = snekPos[0] + snekVel[0];
   // update snek position (y axis)
   snekPos[1] = snekPos[1] + snekVel[1];
 }
+
+function equals(a,b) { return JSON.stringify(a) == JSON.stringify(b) }
 
 // console.log(changeLine("Hello world", 4, "$"));
   // Find the character on the relevant line
