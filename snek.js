@@ -1,4 +1,8 @@
 const { sleep, pressedKeySource, print } = require('./8bit_io');
+const up = [ 0, -1 ];
+const down = [ 0, 1 ];
+const left = [ -1, 0 ];
+const right = [ 1, 0 ];
 
 function chomp() {}; //eats the apple thing, makes the snek longer };
 function clearScreen() { print('\033[2J') };
@@ -48,39 +52,40 @@ while (true) {
 
   // up
   if (key == 'i') {
-    if (equals(snekVel,[ 0, 1 ])) {
+    if (equals(snekVel,down)) {
       // do nothing
     } else {
-      snekVel = [ 0, -1 ];
-    }
-  }
-
-  //left
-  if (key == 'j') {
-    if (equals(snekVel,[ 1, 0 ])) {
-      // do nothing
-    } else {
-      snekVel = [ -1, 0 ];
-    }
-  }
-
-  //right
-  if (key == 'k') {
-    if (equals(snekVel,[ -1, 0 ])) {
-      // do nothing
-    } else {
-      snekVel = [ 1, 0 ];
+      snekVel = up;
     }
   }
 
   //down
   if (key == 'm') {
-    if (equals(snekVel,[ 0, -1 ])) {
+    if (equals(snekVel,up)) {
       // do nothing
     } else {
-      snekVel = [ 0, 1 ];
+      snekVel = down;
     }
   }
+
+  //left
+  if (key == 'j') {
+    if (equals(snekVel,right)) {
+      // do nothing
+    } else {
+      snekVel = left;
+    }
+  }
+
+  //right
+  if (key == 'k') {
+    if (equals(snekVel,left)) {
+      // do nothing
+    } else {
+      snekVel = right;
+    }
+  }
+
   sleep(2000);
 
   // update snek position (x axis)
