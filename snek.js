@@ -4,11 +4,31 @@ const down = [ 0, 1 ];
 const left = [ -1, 0 ];
 const right = [ 1, 0 ];
 
-function chomp() {}; //eats the apple thing, makes the snek longer };
 function clearScreen() { print('\033[2J') };
 
-function makeSnek() { console.log("O") };
-function makeApple() { console.log("*") };
+function scoreCounter() {
+  let score = getScore();
+  // levels
+  const level = Math.floor(score/100) + 1;
+  console.log(`Your score is ${score}`);
+  console.log(level);
+};
+
+function getScore() {
+  let score = (snekLength - 4) * 10;
+  return score;
+};
+
+function addRandomApple() {
+  while (true) {
+    let x = Math.floor(Math.random() * 18);
+    let y = Math.floor(Math.random() * 8);
+    if (map[y][x] == " ") {
+      changeMap(x,y,"✨");
+      break;
+    }
+  }
+};
 
 function drawMapLine(line) { console.log(line) };
 let map = ["|----------------|",
@@ -31,18 +51,50 @@ function changeLine(line,x,symbol) {
   return line.slice(0,x) + symbol + line.slice(x+1)
 };
 
+function eatOrDeath(x,y) {
+  if (["|","-"].includes(map[y][x])) {
+    console.log("You crashed");
+    console.log(`Your score was ${getScore()}`)
+    process.exit();
+  } else if (map[y][x] == "$") {
+    console.log("You ate yourself");
+    process.exit();
+  } else if (map[y][x] == "✨") {
+    snekLength += 1
+    addRandomApple();
+  } else {
+
+  }
+};
+
 const getPressedKey = pressedKeySource();
 
 let snekPos = [ 4, 4 ];
 let snekVel = [ 1, 0 ];
+let snekLength = 4;
+let snekBody = [ ];
+
+var i;
+for (i = 0; i < 5; i++) {
+  addRandomApple();
+}
 
 // main loop (it goes forever)
 while (true) {
-  // do stuff
+  // redraw map with snek movement
   clearScreen();
+  eatOrDeath(snekPos[0], snekPos[1]);
   changeMap(snekPos[0], snekPos[1], '$');
+  snekBody.push([...snekPos]);
+  // draw the tail
+  if (snekBody.length > snekLength) {
+    let tail = snekBody.shift();
+    changeMap(tail[0], tail[1], ' ');
+  }
   drawMap();
+  scoreCounter();
 
+  sleep(800);
 
   let key = getPressedKey();
 
@@ -60,7 +112,7 @@ while (true) {
   }
 
   //down
-  if (key == 'm') {
+  if (key == 'k') {
     if (equals(snekVel,up)) {
       // do nothing
     } else {
@@ -78,7 +130,7 @@ while (true) {
   }
 
   //right
-  if (key == 'k') {
+  if (key == 'l') {
     if (equals(snekVel,left)) {
       // do nothing
     } else {
@@ -86,7 +138,6 @@ while (true) {
     }
   }
 
-  sleep(2000);
 
   // update snek position (x axis)
   snekPos[0] = snekPos[0] + snekVel[0];
