@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "baretest": "^2.0.0",
     "deasync": "^0.1.21",
     "readline-sync": "^1.4.10"
   }
