@@ -35,7 +35,15 @@ test('tetrarse can detect blocks that hit the map', function () {
 });
 
 function goodShapePosition(x, y, shape, map) {
-}
+  for (i = 0; i < 4; i++) {
+    for (j = 0; j < 4; j++) {
+      if (shape[j][i] == "*" && map[y+j][x+i] != " ") {
+        return false
+      }
+    }
+  }
+  return true
+};
 
 test('tetrarse can detect shapes that hit the map', function () {
   const map=["|----------------|",
@@ -100,4 +108,3 @@ test('tetrarse can detect shapes that hit the map', function () {
 });
 
 test.run();
-

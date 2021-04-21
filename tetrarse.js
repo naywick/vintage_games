@@ -15,8 +15,8 @@ let map = ["|----------------|",
            "|                |",
            "|                |",
            "|                |",
-           "|*********** ****|",
-           "|**********  ****|",
+           "|                |",
+           "|                |",
            "|----------------|"];
 function drawMap() {
   map.forEach(drawMapLine);
@@ -64,30 +64,171 @@ function scoreCounter() {
 
 const getPressedKey = pressedKeySource();
 
-function goodPosition(x,y) {
-  return ([" "].includes(map[y][x]))
+function goodShapePosition(x, y, shape, map) {
+  for (i = 0; i < 4; i++) {
+    for (j = 0; j < 4; j++) {
+      if (shape[j][i] == "*" && map[y+j][x+i] != " ") {
+        return false
+      }
+    }
+  }
+  return true
 };
 
-function drawTetromino(x,y) {
-  if (goodPosition(x,y)) {
-    changeMap(x,y,"*");
+function drawTetromino(x,y,shape) {
+  if (goodShapePosition(x,y, shape, map)) {
+    pasteIntoMap(x,y,shape);
   }
 };
 
-function destroyTetromino(x,y) {
-  changeMap(x,y," ");
+function pasteIntoMap(x,y,shape) {
+  for (i = 0; i < 4; i++) {
+    for (j = 0; j < 4; j++) {
+      if (shape[j][i] == "*") {
+        changeMap(x+i,y+j,"*");
+      }
+    }
+  }
 };
 
+const theLShape = [[
+  " *  ",
+  " *  ",
+  " ** ",
+  "    "
+],[
+  "    ",
+  "*** ",
+  "*   ",
+  "    "
+],[
+  "**  ",
+  " *  ",
+  " *  ",
+  "    "
+],[
+  "  * ",
+  "*** ",
+  "    ",
+  "    "
+]];
+
+const theBar = [[
+  " *  ",
+  " *  ",
+  " *  ",
+  " *  "
+], [
+  "    ",
+  "****",
+  "    ",
+  "    "
+], [
+  " *  ",
+  " *  ",
+  " *  ",
+  " *  "
+], [
+  "    ",
+  "****",
+  "    ",
+  "    "
+]];
+
+const theSquare = [[
+  "    ",
+  " ** ",
+  " ** ",
+  "    "
+], [
+  "    ",
+  " ** ",
+  " ** ",
+  "    "
+], [
+  "    ",
+  " ** ",
+  " ** ",
+  "    "
+], [
+  "    ",
+  " ** ",
+  " ** ",
+  "    "
+]];
+
+const theZigZag = [[
+  "    ",
+  " ** ",
+  "**  ",
+  "    "
+], [
+  " *  ",
+  " ** ",
+  "  * ",
+  "    "
+], [
+  "    ",
+  " ** ",
+  "**  ",
+  "    "
+], [
+  " *  ",
+  " ** ",
+  "  * ",
+  "    "
+]];
+
+const theTShape = [[
+  "*** ",
+  " *  ",
+  "    ",
+  "    "
+], [
+  "  * ",
+  " ** ",
+  "  * ",
+  "    "
+], [
+  "    ",
+  " *  ",
+  "*** ",
+  "    "
+], [
+  "*   ",
+  "**  ",
+  "*   ",
+  "    "
+]];
+
+let shapes = [theLShape, theBar, theSquare, theZigZag, theTShape]
+
+function destroyTetromino(x,y,shape) {
+  for (i = 0; i < 4; i++) {
+    for (j = 0; j < 4; j++) {
+      if (shape[j][i] == "*") {
+        changeMap(x+i,y+j," ");
+      }
+    }
+  }
+};
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
 let tetrominoPos = [ 10, 1]
+let tetrominoRot = 2
+let tetrominoSelect = getRandomInt(5)
 
 // main loop (it goes forever)
 while (true) {
   clearScreen();
-  drawTetromino(tetrominoPos[0], tetrominoPos[1]);
+  drawTetromino(tetrominoPos[0], tetrominoPos[1], shapes[tetrominoSelect][tetrominoRot]);
   drawMap();
   scoreCounter();
   let oldPosition = tetrominoPos
-  destroyTetromino(tetrominoPos[0], tetrominoPos[1]);
+  destroyTetromino(tetrominoPos[0], tetrominoPos[1],shapes[tetrominoSelect][tetrominoRot]);
 
   let key = getPressedKey();
 
@@ -117,23 +258,39 @@ while (true) {
   };
 
   // rotate
-  // if (key == 'r') {
-  //
-  // }
+  if (key == 'd') {
+    if (tetrominoRot < 3) {
+      tetrominoRot++
+    } else {
+      tetrominoRot = 0
+    }
+  } else if (key == 'f') {
+    if (tetrominoRot > 0) {
+      tetrominoRot--
+    } else {
+      tetrominoRot = 3
+    }
+  }
 
-  if (goodPosition(tetrominoPos[0], tetrominoPos[1]) == false) {
-    drawTetromino(oldPosition[0], oldPosition[1])
-    tetrominoPos = [10, 1]
+  // Moving sideways
+  if (goodShapePosition(tetrominoPos[0], tetrominoPos[1], shapes[tetrominoSelect][tetrominoRot], map) == false) {
+    tetrominoPos = [oldPosition[0], oldPosition[1]]
   };
 
   oldPosition = tetrominoPos;
 
   tetrominoPos = [tetrominoPos[0], (tetrominoPos[1] + 1)];
 
-  if (goodPosition(tetrominoPos[0], tetrominoPos[1]) == false) {
-    drawTetromino(oldPosition[0], oldPosition[1])
+  // Moving down
+  if (goodShapePosition(tetrominoPos[0], tetrominoPos[1], shapes[tetrominoSelect][tetrominoRot], map) == false) {
+    drawTetromino(oldPosition[0], oldPosition[1], shapes[tetrominoSelect][tetrominoRot])
     tetrominoPos = [10, 1]
+    tetrominoSelect = getRandomInt(5)
+    tetrominoRot = getRandomInt(4)
+    if (goodShapePosition(tetrominoPos[0], tetrominoPos[1], shapes[tetrominoSelect][tetrominoRot], map) == false) {
+      process.exit();
+    }
   };
-  
+
   handleCompleteLines();
 }
