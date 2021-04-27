@@ -65,8 +65,18 @@
             function mapColour(x,y) {
               if ((map[y][x] == "|") || (map[y][x] == "-")) {
                 return "#fff"
-              } else if (map[y][x] == "*") {
+              } else if (map[y][x] == "&") {
                 return "#f00"
+              } else if (map[y][x] == "$") {
+                return "#ff0"
+              } else if (map[y][x] == "^") {
+                return "#0f0"
+              } else if (map[y][x] == "@") {
+                return "#00f"
+              } else if (map[y][x] == "*") {
+                return "#0ff"
+              } else if (map[y][x] == "+") {
+                return "#f0f"
               } else {
                 return "#000"
               }
@@ -102,7 +112,7 @@
 
             function moveLinesDown(i) {
               map.splice(i, 1);
-              map.splice(1, 0, "|                |");
+              map.splice(1, 0, "|          |");
             };
 
             function scoreCounter() {
@@ -121,7 +131,7 @@
             function goodShapePosition(x, y, shape, map) {
               for (i = 0; i < 4; i++) {
                 for (j = 0; j < 4; j++) {
-                  if (shape[j][i] == "*" && map[y+j][x+i] != " ") {
+                  if (shape[j][i] != " " && map[y+j][x+i] != " ") {
                     return false
                   }
                 }
@@ -138,98 +148,98 @@
             function pasteIntoMap(x,y,shape) {
               for (i = 0; i < 4; i++) {
                 for (j = 0; j < 4; j++) {
-                  if (shape[j][i] == "*") {
-                    changeMap(x+i,y+j,"*");
+                  if (shape[j][i] != " ") {
+                    changeMap(x+i,y+j,shape[j][i]);
                   }
                 }
               }
             };
 
             const theLShape = [[
-              " *  ",
-              " *  ",
-              " ** ",
+              " &  ",
+              " &  ",
+              " && ",
               "    "
             ],[
               "    ",
-              "*** ",
-              "*   ",
+              "&&& ",
+              "&   ",
               "    "
             ],[
-              "**  ",
-              " *  ",
-              " *  ",
+              "&&  ",
+              " &  ",
+              " &  ",
               "    "
             ],[
-              "  * ",
-              "*** ",
+              "  & ",
+              "&&& ",
               "    ",
               "    "
             ]];
 
             const theNotLShape = [[
-              "  * ",
-              "  * ",
-              " ** ",
+              "  $ ",
+              "  $ ",
+              " $$ ",
               "    "
             ],[
               "    ",
-              "*** ",
-              "  * ",
+              "$$$ ",
+              "  $ ",
               "    "
             ],[
-              " ** ",
-              " *  ",
-              " *  ",
+              " $$ ",
+              " $  ",
+              " $  ",
               "    "
             ],[
-              "*   ",
-              "*** ",
+              "$   ",
+              "$$$ ",
               "    ",
               "    "
             ]];
 
             const theBar = [[
-              " *  ",
-              " *  ",
-              " *  ",
-              " *  "
+              " ^  ",
+              " ^  ",
+              " ^  ",
+              " ^  "
             ], [
               "    ",
-              "****",
+              "^^^^",
               "    ",
               "    "
             ], [
-              " *  ",
-              " *  ",
-              " *  ",
-              " *  "
+              " ^  ",
+              " ^  ",
+              " ^  ",
+              " ^  "
             ], [
               "    ",
-              "****",
+              "^^^^",
               "    ",
               "    "
             ]];
 
             const theSquare = [[
               "    ",
-              " ** ",
-              " ** ",
+              " @@ ",
+              " @@ ",
               "    "
             ], [
               "    ",
-              " ** ",
-              " ** ",
+              " @@ ",
+              " @@ ",
               "    "
             ], [
               "    ",
-              " ** ",
-              " ** ",
+              " @@ ",
+              " @@ ",
               "    "
             ], [
               "    ",
-              " ** ",
-              " ** ",
+              " @@ ",
+              " @@ ",
               "    "
             ]];
 
@@ -278,24 +288,24 @@
             ]];
 
             const theTShape = [[
-              "*** ",
-              " *  ",
+              "+++ ",
+              " +  ",
               "    ",
               "    "
             ], [
-              "  * ",
-              " ** ",
-              "  * ",
+              "  + ",
+              " ++ ",
+              "  + ",
               "    "
             ], [
               "    ",
-              " *  ",
-              "*** ",
+              " +  ",
+              "+++ ",
               "    "
             ], [
-              "*   ",
-              "**  ",
-              "*   ",
+              "+   ",
+              "++  ",
+              "+   ",
               "    "
             ]];
 
@@ -304,7 +314,7 @@
             function destroyTetromino(x,y,shape) {
               for (i = 0; i < 4; i++) {
                 for (j = 0; j < 4; j++) {
-                  if (shape[j][i] == "*") {
+                  if (shape[j][i] != " ") {
                     changeMap(x+i,y+j," ");
                   }
                 }
@@ -336,8 +346,12 @@
             let tetrominoPos = [...tetrominoStart]
             let tetrominoRot = 2
             let tetrominoSelect = getRandomInt(5)
+            let dead = false
 
             function updateMap() {
+              if (dead = true) {
+
+              } else {
                 for (let y=0; y<10; ++y) {
                     for (let x=0; x<10; x++) {
                         let brightness = Math.sin(t+0.01*x*y);
@@ -358,7 +372,7 @@
                 console.log(key)
 
                 if (key == 'q') {
-                  process.exit();
+                  dead = true;
                 }
 
                 //left
@@ -413,11 +427,12 @@
                   tetrominoSelect = getRandomInt(5)
                   tetrominoRot = getRandomInt(4)
                   if (goodShapePosition(tetrominoPos[0], tetrominoPos[1], shapes[tetrominoSelect][tetrominoRot], map) == false) {
-                    // process.exit();
+                  dead = true;
                   }
                 };
 
                 handleCompleteLines();
+              }
             }
             setInterval(updateMap, 500);
         </script>
