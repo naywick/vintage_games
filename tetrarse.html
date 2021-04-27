@@ -2,7 +2,7 @@
 <html>
     <head>
     </head>
-    <body>
+    <body style="overflow-y: hidden">
         <div id="scoreboard" style="position: absolute; left: 120px; top:50px; z-index: 999; color: white;"></div>
         <div id="deadmessage" style="position: absolute; left: 110px; top:200px; z-index: 999; color: white;"></div>
         <script>
@@ -312,7 +312,7 @@
               "    "
             ]];
 
-            let shapes = [theLShape, theBar, theSquare, theZigZag, theTShape]
+            let shapes = [theLShape, theNotLShape, theBar, theSquare, theUnZigZag, theZigZag, theTShape]
 
             function destroyTetromino(x,y,shape) {
               for (i = 0; i < 4; i++) {
@@ -379,28 +379,28 @@
                 }
 
                 //left
-                if (key == 'j') {
-                  if (!(tetrominoPos[0] < 2)) {
+                if (key == 'j' || key == 'ArrowLeft') {
+                  if (!(tetrominoPos[0] < 1)) {
                     tetrominoPos = [tetrominoPos[0] - 1, tetrominoPos[1]]
                   }
                 }
 
                 //right
-                if (key == 'l') {
+                if (key == 'l' || key == 'ArrowRight') {
                   if (tetrominoPos[0] < (map[0].length) - 2) {
                     tetrominoPos = [tetrominoPos[0] + 1, tetrominoPos[1]]
                   }
                 }
 
                 //down
-                if (key == 'k') {
+                if (key == 'k' || key == 'ArrowDown') {
                   // sleep(200);
                 } else {
                   // sleep(800);
                 };
 
                 // rotate
-                if (key == 'd') {
+                if (key == 'd' || key == 'ArrowUp') {
                   if (tetrominoRot < 3) {
                     tetrominoRot++
                   } else {
