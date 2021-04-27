@@ -3,6 +3,8 @@
     <head>
     </head>
     <body>
+        <div id="scoreboard" style="position: absolute; left: 120px; top:50px; z-index: 999; color: white;"></div>
+        <div id="deadmessage" style="position: absolute; left: 110px; top:200px; z-index: 999; color: white;"></div>
         <script>
             let tiles = [];
             for (let y=0; y<22; ++y) {
@@ -118,8 +120,9 @@
             function scoreCounter() {
               // levels
               const level = Math.floor(score/100) + 1;
-              console.log(`Your score is ${score}`);
-              console.log(`You are at level ${level}`);
+              document.getElementById("scoreboard").innerText = `Your score is ${score}`;
+              //console.log(`Your score is ${score}`);
+              //console.log(`You are at level ${level}`);
             };
 
             function handleKeyDown(event) {
@@ -349,8 +352,8 @@
             let dead = false
 
             function updateMap() {
-              if (dead = true) {
-
+              if (dead == true) {
+                document.getElementById("deadmessage").innerText = "Congratulations! You are dead."
               } else {
                 for (let y=0; y<10; ++y) {
                     for (let x=0; x<10; x++) {
