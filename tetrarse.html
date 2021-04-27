@@ -334,6 +334,9 @@
 
             function handleKeyPress(event) {
               pressedKey = event.key;
+
+              // immediately update the game when a key is pressed
+              updateMap();
             };
 
             function getPressedKey() {
@@ -350,8 +353,14 @@
             let tetrominoRot = 2
             let tetrominoSelect = getRandomInt(5)
             let dead = false
+            
+            let timeoutHandler = setTimeout(updateMap, 500);
 
             function updateMap() {
+              // schedule a new updateMap call in 500ms
+              clearTimeout(timeoutHandler);
+              timeoutHandler = setTimeout(updateMap, 500);
+
               if (dead == true) {
                 document.getElementById("deadmessage").innerText = "Congratulations! You are dead."
               } else {
@@ -437,7 +446,6 @@
                 handleCompleteLines();
               }
             }
-            setInterval(updateMap, 500);
         </script>
     </body>
 </html>
